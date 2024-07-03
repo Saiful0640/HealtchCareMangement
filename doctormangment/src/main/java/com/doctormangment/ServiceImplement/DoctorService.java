@@ -7,6 +7,7 @@ import com.doctormangment.repository.DoctorRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,7 +51,23 @@ public class DoctorService implements IDoctor {
     }
 
     @Override
-    public void deleteDoctor(Long id) {
+    public String deleteDoctor(Long id) {
+
+        try {
+            Optional<Doctor> doctor = doctorRepo.findById(id);
+
+            if (doctor.isPresent()){
+                doctorRepo.deleteById(id);
+
+
+                return "Doctor Delete Successfully";
+            }else {
+
+                return "Doctor delete Faild";
+            }
+        }catch (Exception e){
+                throw   new DoctorNotFoundException("Error Occuer while deleting Doctor", e);
+        }
 
     }
 
@@ -72,6 +89,17 @@ public class DoctorService implements IDoctor {
 
     @Override
     public List<Doctor> getAllDoctors() {
-        return null;
+
+        try {
+            List<Doctor> doctorList = doctorRepo.findAll();
+            if (doctorList.isEmpty()){
+                throw new DoctorNotFoundException("Doctor not Available ");
+            }else {
+                return doctorList;
+            }
+
+        }catch (Exception e){
+            throw new DoctorNotFoundException("Erro Occuer While Finding Doctor", e);
+        }
     }
 }

@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface IDoctor {
     public Doctor saveDoctor(Doctor doctor);
     public  Doctor updateDoctor(Long id,Doctor doctorDetails);
-    public void deleteDoctor(Long id);
+    public String deleteDoctor(Long id);
     public Optional<Doctor> getDoctorById(Long id);
     public List<Doctor> getAllDoctors();
 }
