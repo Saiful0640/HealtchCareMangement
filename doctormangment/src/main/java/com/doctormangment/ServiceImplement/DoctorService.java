@@ -63,7 +63,7 @@ public class DoctorService implements IDoctor {
                 return "Doctor Delete Successfully";
             }else {
 
-                return "Doctor delete Faild";
+                return "Doctor delete failed";
             }
         }catch (Exception e){
                 throw   new DoctorNotFoundException("Error Occuer while deleting Doctor", e);
@@ -78,7 +78,7 @@ public class DoctorService implements IDoctor {
             if (doctor.isPresent()){
                 return doctor;
             }else {
-                throw new DoctorNotFoundException("Doctor not found with this id");
+                return null;
             }
         }catch (Exception e){
         throw new DoctorNotFoundException("Error occure while finding the doctor", e);

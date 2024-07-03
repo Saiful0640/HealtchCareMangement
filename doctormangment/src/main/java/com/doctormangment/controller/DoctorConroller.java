@@ -27,53 +27,53 @@ public class DoctorConroller {
     }
 
     @PutMapping("/doctorUpdate/{id}")
-    public ResponseEntity <?> doctorUpdate(@PathVariable Long id, @RequestBody Doctor doctorDetails ){
+    public ResponseEntity<?> doctorUpdate(@PathVariable Long id, @RequestBody Doctor doctorDetails) {
 
-        try{
+        try {
             Doctor doctorOne = iDoctor.updateDoctor(id, doctorDetails);
-            if(doctorOne != null){
+            if (doctorOne != null) {
 
                 return new ResponseEntity<>("Doctor Updated Successfully", HttpStatus.OK);
-            }else {
-                return  new ResponseEntity<>("Doctor info Updated Faild", HttpStatus.NOT_FOUND);
+            } else {
+                return new ResponseEntity<>("Doctor info Updated Faild", HttpStatus.NOT_FOUND);
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             HashMap<String, String> response = new HashMap<>();
             response.put("message", e.getMessage());
-                return new ResponseEntity<Map<String, String>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<Map<String, String>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @DeleteMapping("deleteDoctor/{id}")
-    public ResponseEntity<String> doctorDelete(@PathVariable Long id){
+    public ResponseEntity<String> doctorDelete(@PathVariable Long id) {
 
         String response = iDoctor.deleteDoctor(id);
         try {
-          return new ResponseEntity<>(response, HttpStatus.OK) ;
-        }catch (Exception e ){
-            return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
     @GetMapping("getDoctor/{id}")
-    public ResponseEntity<?> getDoctor(@PathVariable Long id){
+    public ResponseEntity<?> getDoctor(@PathVariable Long id) {
         Optional<Doctor> doctor = iDoctor.getDoctorById(id);
         try {
-            if (doctor.isPresent()){
-                return new ResponseEntity<>(doctor.get(),HttpStatus.FOUND);
-            }else {
-                return new ResponseEntity<>("Doctor not found",HttpStatus.NOT_FOUND);
+            if (doctor.isPresent()) {
+                return new ResponseEntity<>(doctor.get(), HttpStatus.FOUND);
+            } else {
+                return new ResponseEntity<>("Doctor not found", HttpStatus.NOT_FOUND);
             }
-        }catch (DoctorNotFoundException e){
-            return new ResponseEntity<>( e.getMessage(), HttpStatus.NOT_FOUND);
-        }catch (Exception e){
-            return  new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (DoctorNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping("/getallDoctor")
-    public ResponseEntity<?> ListOfDoctor (){
+    public ResponseEntity<?> ListOfDoctor() {
 
         try {
             List<Doctor> doctors = iDoctor.getAllDoctors();
@@ -82,6 +82,9 @@ public class DoctorConroller {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>("An error occurred while retrieving doctors.", HttpStatus.INTERNAL_SERVER_ERROR);
+
         }
+
     }
+
 }
