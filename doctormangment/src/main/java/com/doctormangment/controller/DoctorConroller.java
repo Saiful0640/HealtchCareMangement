@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("api/v1")
 public class DoctorConroller {
@@ -58,9 +59,10 @@ public class DoctorConroller {
 
     @GetMapping("getDoctor/{id}")
     public ResponseEntity<?> getDoctor(@PathVariable Long id) {
-        Optional<Doctor> doctor = iDoctor.getDoctorById(id);
+
         try {
-            if (doctor.isPresent()) {
+            Optional<Doctor> doctor = iDoctor.getDoctorById(id);
+            if (doctor !=null && doctor.isPresent()) {
                 return new ResponseEntity<>(doctor.get(), HttpStatus.FOUND);
             } else {
                 return new ResponseEntity<>("Doctor not found", HttpStatus.NOT_FOUND);

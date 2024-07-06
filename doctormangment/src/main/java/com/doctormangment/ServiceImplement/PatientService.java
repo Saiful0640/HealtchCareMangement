@@ -2,33 +2,38 @@ package com.doctormangment.ServiceImplement;
 
 import com.doctormangment.IService.IPatient;
 import com.doctormangment.model.Patient;
+import com.doctormangment.model.Role;
 import com.doctormangment.repository.PatientRepo;
+import com.doctormangment.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class PatientService implements IPatient {
 
     @Autowired
     PatientRepo patientRepo;
+    @Autowired
+    RoleRepository roleRepository;
 
     @Override
-    public boolean savePatient(Patient patient) {
-        try {
-            Patient patient1 = patientRepo.save(patient);
-            if (patient1 !=null){
-                return true;
-            }else {
-                return false;
+    public Patient  savePatient(Patient patient) {
+        Set<Role> roles = patient.getRoles();
+        Set<Role> persistedRoles = new HashSet<>();
+        for (Role role : roles) {
+            Role existingRole = roleRepository.findByName(role.getName());
+            if (existingRole != null) {
+                persistedRoles.add(existingRole);
+            } else {
+                // Optionally save the new role if it doesn't exist
+                existingRole = roleRepository.save(role);
+                persistedRoles.add(existingRole);
             }
-        }catch (Exception e){
-            throw new RuntimeException("Error occuer While Saving Patient", e);
-
         }
+        patient.setRoles(persistedRoles);
+        return patientRepo.save(patient);
     }
 
     @Override

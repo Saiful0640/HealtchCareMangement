@@ -3,24 +3,26 @@ package com.doctormangment.ServiceImplement;
 import com.doctormangment.IService.IDoctor;
 import com.doctormangment.exception.DoctorNotFoundException;
 import com.doctormangment.model.Doctor;
+import com.doctormangment.model.Role;
 import com.doctormangment.repository.DoctorRepo;
+import com.doctormangment.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class DoctorService implements IDoctor {
 
     @Autowired
     DoctorRepo doctorRepo;
+    @Autowired
+    RoleRepository roleRepository;
 
     @Override
     public Doctor saveDoctor(Doctor doctor) {
 
-        if(doctor==null){
+        /*if(doctor==null){
             throw new IllegalArgumentException("data can't be null");
         }
 
@@ -30,7 +32,25 @@ public class DoctorService implements IDoctor {
             return doctor1;
         }catch (Exception e){
              throw new RuntimeException("faild to save Doctor", e);
+        }*/
+
+        Set<Role> roles = doctor.getRoles();
+        Set<Role> persistedRoles = new HashSet<>();
+        for (Role role : roles) {
+            Role existingRole = roleRepository.findByName(role.getName());
+            if (existingRole != null) {
+                persistedRoles.add(existingRole);
+            } else {
+                existingRole = roleRepository.save(role);
+                persistedRoles.add(existingRole);
+            }
         }
+
+        // Set the persisted roles back to the doctor
+        doctor.setRoles(persistedRoles);
+
+        // Save the doctor
+        return doctorRepo.save(doctor);
 
     }
 
@@ -75,7 +95,7 @@ public class DoctorService implements IDoctor {
     public Optional<Doctor> getDoctorById(Long id) {
         try {
             Optional<Doctor> doctor = doctorRepo.findById(id);
-            if (doctor.isPresent()){
+            if (doctor != null && doctor.isPresent()){
                 return doctor;
             }else {
                 return null;
